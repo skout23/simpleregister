@@ -6,7 +6,7 @@
          <title>Registration Page</title>
          <link href="style/style.css" rel="stylesheet" type="text/css">
 
- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
   <script  type='text/javascript'>
    $(document).ready(function(){    
    $(".submit").hover(       
@@ -38,6 +38,7 @@
            <p>Coded and designed by <a href="http://www.ac-web.org/forums/member.php?u=215792">Napoleon</a>.</p>
 		   <p>Edited by <a href="http://www.ac-web.org/forums/member.php?u=202557">Joorkataa</a></p>
        <p>SRP6 added by <a href="http://www.ac-web.org/forums/member.php?u=339907">SegaFan</a></p>
+       <p>How to set your <a href="https://www.wikihow.com/Set-a-Realmlist-for-World-of-Warcraft">Realmlist and get Connected</a></p>
              </div>
             <!-- End of content div -->
 

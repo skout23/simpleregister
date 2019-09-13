@@ -1,28 +1,18 @@
 <?php
 ini_set('display_errors', 'Off');
+include("configs.php");
 
 function Error($Error)
 {
 	echo "<br /><br /><br /><br /><br /><br /><center><b><span style='color:#CD0000;'> " . $Error . "</span></b></center>";
 }
-function ConnectMysql()
-{
-	include("configs.php");
-	$link=mysql_connect("" . $mysql_host . "","" . $mysql_user . "","" . $mysql_pass . "");
-	
-	if(!$link) {
-	echo "Cannot connect to database!";
-	}else{
-	mysql_select_db("". $mysql_db . "",$link);
-	}
-}
 
 function GetSrpResponse($username, $password)
 {
-  include("configs.php");
-  $srp_command = "$srp6passwd_path $username $password";
-  $srp_statement = system($srp6passwd_path, $retval);
-  return $srp_statement;
+	include('configs.php');
+	$srp_command = "$srp6passwd_path $username $password $password";
+	$srp_statement = system("$srp_command", $retval);
+	return $srp_statement;
 }
 
 function register()
@@ -39,8 +29,9 @@ if($core == 1) {
 		$flags = "2";
 		}
 		
+		
 		}else{ echo '<script type="text/javascript">window.location = "index.php?error=Please select an expansion.";</script>'; exit(); }
-		ConnectMysql();
+		// ConnectMysql();
 		$user_chars = "#[^a-zA-Z0-9_\-]#";
 		
         if ((empty($_POST["user"]))||(empty($_POST["password"])) ) {
@@ -71,15 +62,15 @@ if($core == 1) {
                 if (preg_match($user_chars,$password)) {
 						echo '<script type="text/javascript">window.location = "index.php?error=Please only use A-Z and 0-9.";</script>';
 						exit();
-                };
-                $username = mysql_real_escape_string($username);
-                $password = mysql_real_escape_string($password);
-                $qry = mysql_query("SELECT username FROM account WHERE username = '" . $username . "'");
+				};
+                $username = mysqli_real_escape_string($link, $username);
+				$password = mysqli_real_escape_string($link, $password);
+                $qry = mysqli_query($link, "SELECT username FROM account WHERE username = '" . $username . "'");
 				if (!$qry) {
 					echo '<script type="text/javascript">window.location = "index.php?error=Error querying database.";</script>';
 					exit();
 				};
-                if ($existing_username = mysql_fetch_assoc($qry)) {
+                if ($existing_username = mysqli_fetch_assoc($qry)) {
                         foreach ($existing_username as $key => $value) {
                                 $existing_username = $value;
                         };
@@ -91,12 +82,12 @@ if($core == 1) {
                 };
 				unset($qry);
 				if($_POST['account_table'] == "sha") {
-				$sha_pass_hash = sha1(strtoupper($username) . ":" . strtoupper($password));
-				$register_sql = "INSERT INTO account (username, sha_pass_hash, expansion) VALUES ('" . $username . "','" . $sha_pass_hash . "','" . $flags . "')";
+					$sha_pass_hash = sha1(strtoupper($username) . ":" . strtoupper($password));
+					$register_sql = "INSERT INTO account (username, sha_pass_hash, expansion) VALUES ('" . $username . "','" . $sha_pass_hash . "','" . $flags . "')";
 				}elseif($_POST['account_table'] == "srp") {
-				$register_sql = GetSrpResponse();
+					$register_sql = GetSrpResponse($username, $password);
 				};
-                $qry = mysql_query($register_sql);
+                $qry = mysqli_query($link, $register_sql);
 				if (!$qry) {
 					echo '<script type="text/javascript">window.location = "index.php?error=Error creating account.";</script>';
 					exit();
@@ -107,7 +98,7 @@ if($core == 1) {
 }elseif($core == 2) {
 
 		if(isset($_POST['flags'])) { $flags = "" . $_POST['flags'] . ""; }else{ echo '<script type="text/javascript">window.location = "index.php?error=Please select an expansion.";</script>'; exit(); }
-		ConnectMysql();
+		// ConnectMysql();
 		$user_chars = "#[^a-zA-Z0-9_\-]#";
 		
         if ((empty($_POST["user"]))||(empty($_POST["password"])) ) {
@@ -138,15 +129,15 @@ if($core == 1) {
                 if (preg_match($user_chars,$password)) {
 						echo '<script type="text/javascript">window.location = "index.php?error=Please only use A-Z and 0-9.";</script>';
 						exit();
-                };
-                $username = mysql_real_escape_string($username);
-                $password = mysql_real_escape_string($password);
-                $qry = mysql_query("SELECT login FROM accounts WHERE login = '" . $username . "'");
+				};
+                $username = mysqli_real_escape_string($link, $username);
+                $password = mysqli_real_escape_string($link, $password);
+                $qry = mysqli_query($link, "SELECT login FROM accounts WHERE login = '" . $username . "'");
 				if (!$qry) {
 					echo '<script type="text/javascript">window.location = "index.php?error=Error querying database.";</script>';
 					exit();
 				};
-                if ($existing_username = mysql_fetch_assoc($qry)) {
+                if ($existing_username = mysqli_fetch_assoc($qry)) {
                         foreach ($existing_username as $key => $value) {
                                 $existing_username = $value;
                         };
@@ -158,7 +149,7 @@ if($core == 1) {
                 };
 				unset($qry);
                 $register_sql = "INSERT INTO accounts (login, password, flags) VALUES ('" . $username . "','" . $password . "','" . $flags . "')";
-                $qry = mysql_query($register_sql);
+                $qry = mysqli_query($lnk, $register_sql);
 				if (!$qry) {
 					echo '<script type="text/javascript">window.location = "index.php?error=Error creating account.";</script>';
 					exit();

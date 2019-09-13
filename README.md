@@ -11,3 +11,5 @@
 // path to where github.com/skout23/srp6passwd is installed
 $srp6passwd_path = "/some/path/to/the/srp6passwd/bin/srp6passwd"; 
 ```
+
+## It's ugly but works for private server stuff.
